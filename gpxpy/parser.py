@@ -465,9 +465,27 @@ class GPXParser:
         speed_node = self.xml_parser.get_first_child(node, 'speed')
         speed = mod_utils.to_number(self.xml_parser.get_node_data(speed_node))
 
+        extensions_node = self.xml_parser.get_first_child(node, 'extensions')
+        extensions = self.__parse_track_point_extensions(extensions_node)
+
         return mod_gpx.GPXTrackPoint(latitude=latitude, longitude=longitude, elevation=elevation, time=time,
                                      symbol=symbol, comment=comment, horizontal_dilution=hdop, vertical_dilution=vdop,
-                                     position_dilution=pdop, speed=speed, name=name)
+                                     position_dilution=pdop, speed=speed, name=name, extensions=None)
+
+    def __parse_track_point_extensions(self, extensions_node):
+        if extensions_node is None:
+            return None
+        extensions = {}
+        TrackPointExtension_node = self.xml_parser.get_first_child(extensions_node, 'TrackPointExtension')
+
+        for child_node in self.xml_parser.get_children(TrackPointExtension_node):
+            child_node_name = self.xml_parser.get_node_name(child_node)
+            child_node_data = self.xml_parser.get_node_data(child_node)
+            if mod_utils.is_numeric(child_node_data):
+                child_node_data = mod_utils.to_number(child_node_data)
+            extensions[child_node_name] = child_node_data
+
+        return extensions
 
 
 if __name__ == '__main__':
