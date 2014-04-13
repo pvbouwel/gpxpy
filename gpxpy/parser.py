@@ -472,6 +472,7 @@ class GPXParser:
                                      symbol=symbol, comment=comment, horizontal_dilution=hdop, vertical_dilution=vdop,
                                      position_dilution=pdop, speed=speed, name=name, extensions=extensions)
 
+
     def __parse_track_point_extensions(self, extensions_node):
         if extensions_node is None:
             return None
